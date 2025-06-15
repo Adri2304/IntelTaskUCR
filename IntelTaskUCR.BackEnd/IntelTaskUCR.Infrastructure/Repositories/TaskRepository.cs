@@ -26,7 +26,7 @@ namespace IntelTaskUCR.Infrastructure.Repositories
 
                 if (task != null)
                 {
-                    result.Add(new (task.CnIdTarea, task.CnTareaOrigen, task.CtTituloTarea, task.CtDescripcionTarea,
+                    result.Add(new(task.CnIdTarea, task.CnTareaOrigen, task.CtTituloTarea, task.CtDescripcionTarea,
                         task.CtDescripcionEspera, task.CnIdComplejidad, task.CnIdEstado, task.CnIdPrioridad, task.CnNumeroGis,
                         task.CfFechaAsignacion, task.CfFechaLimite, task.CfFechaFinalizacion, task.CnUsuarioCreador,
                         task.CnUsuarioAsignado));
@@ -82,6 +82,23 @@ namespace IntelTaskUCR.Infrastructure.Repositories
                 return await _dbContext.SaveChangesAsync() == 1;
             }
             return false;
+        }
+
+        public async Task<bool> ChangeStatusTaskAsync(int idTask, int idStatus)
+        {
+            var task = await _dbContext.TTareas.FindAsync(idTask);
+            task!.CnIdEstado = (byte)idStatus;
+            _dbContext.Entry(task).State = EntityState.Modified;
+            return await _dbContext.SaveChangesAsync() == 1;
+        }
+
+        public async Task<bool> ChangeStatusTaskAsync(int idTask, int idStatus, string message)
+        {
+            var task = await _dbContext.TTareas.FindAsync(idTask);
+            task!.CnIdEstado = (byte)idStatus;
+            task!.CtDescripcionEspera = message;
+            _dbContext.Entry(task).State = EntityState.Modified;
+            return await _dbContext.SaveChangesAsync() == 1;
         }
     }
 }

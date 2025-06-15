@@ -2,6 +2,7 @@
 using IntelTaskUCR.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IntelTaskUCR.API.Controllers
@@ -61,18 +62,12 @@ namespace IntelTaskUCR.API.Controllers
             }
         }
 
-        //[HttpDelete]
-        //[Route("delete/{idTask}")]
-        //public async Task<ActionResult> DeleteTaskAsync(int idTask)
-        //{
-        //    try
-        //    {
-               
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        [HttpPost]
+        [Route("changestatus")]
+        public async Task<ActionResult> ChangeTaskStatusAsync(ChangeStatusDTO data)
+        {
+            var response = await _taskService.ChangeStatusTaskAsync(data.CnIdTarea, data.CnIdUsuario, data.CnIdEstado, data.AdditionalData);
+            return response ? StatusCode(200, "Cambiado exitosamente") : StatusCode(409);
+        }
     }
 }

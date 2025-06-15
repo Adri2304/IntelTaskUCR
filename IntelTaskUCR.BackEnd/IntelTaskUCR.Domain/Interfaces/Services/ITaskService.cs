@@ -12,5 +12,6 @@ namespace IntelTaskUCR.Domain.Interfaces.Services
         Task<List<Tasks>> ReadTaskAsync(int? idTask);
         Task<bool> CreateTaskAsync(Dictionary<string, object?> newTask);
         Task<bool> UpdateTaskAsync(int id, Dictionary<string, object?> newData);
+        Task<bool> ChangeStatusTaskAsync(int idTask, int? idUser, int idStatus, object? additionalData);
     }
 }

@@ -1,0 +1,15 @@
+﻿using IntelTaskUCR.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IntelTaskUCR.Domain.Interfaces.Services
+{
+    public interface IMachineStateService
+    {
+        IEnumerable<TaskStates> ObtenerTransicionesValidas(TaskStates estadoActual);
+        TaskStates EjecutarTransicion(TaskStates estadoActual, TaskStates nuevoEstado);
+    }
+}

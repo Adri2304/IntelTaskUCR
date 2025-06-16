@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using IntelTaskUCR.Domain.Interfaces.Services;
+using IntelTaskUCR.API.DTOs;
 
 namespace IntelTaskUCR.API.Controllers
 {
@@ -14,11 +15,11 @@ namespace IntelTaskUCR.API.Controllers
 
         [HttpPost]
         [Route("auth")]
-        public async Task<ActionResult> AutenticateUser([FromBody] string userName, [FromBody] string password)
+        public async Task<ActionResult> AutenticateUser([FromBody] AuthDTO data)
         {
             try
             {
-                var response = await _authService.AutenticateUser(userName, password);
+                var response = await _authService.AutenticateUser(data.UserEmail, data.Password);
                 return response ? StatusCode(200, "Autenticado correctamente") : StatusCode(409);
             } catch (Exception ex)
             {

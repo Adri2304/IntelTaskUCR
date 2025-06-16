@@ -8,6 +8,6 @@ namespace IntelTaskUCR.Domain.Interfaces.Repositories
 {
     public interface IRejectJustifyingRepository
     {
-        Task<bool> CreateRejectJustifyingAsync(int idTask, string message)
+        Task<bool> CreateRejectJustifyingAsync(int idTask, string message);
     }
 }

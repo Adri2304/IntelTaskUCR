@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace IntelTaskUCR.Infrastructure.Repositories
@@ -36,6 +37,27 @@ namespace IntelTaskUCR.Infrastructure.Repositories
             }
 
             var tasks = await _dbContext.TTareas.ToListAsync();
+
+            if (tasks != null)
+            {
+                foreach (var task in tasks)
+                {
+                    result.Add(new(task.CnIdTarea, task.CnTareaOrigen, task.CtTituloTarea, task.CtDescripcionTarea,
+                        task.CtDescripcionEspera, task.CnIdComplejidad, task.CnIdEstado, task.CnIdPrioridad, task.CnNumeroGis,
+                        task.CfFechaAsignacion, task.CfFechaLimite, task.CfFechaFinalizacion, task.CnUsuarioCreador,
+                        task.CnUsuarioAsignado));
+                }
+            }
+            return result;
+        }
+
+        public async Task<List<Tasks>> ReadTasksPerUserAsync(int idUser)
+        {
+            var result = new List<Tasks>();
+
+            var tasks = await _dbContext.TTareas
+                .Where(x => x.CnUsuarioAsignado == idUser || x.CnUsuarioCreador == idUser)
+                .ToListAsync();
 
             if (tasks != null)
             {
@@ -96,7 +118,12 @@ namespace IntelTaskUCR.Infrastructure.Repositories
         {
             var task = await _dbContext.TTareas.FindAsync(idTask);
             task!.CnIdEstado = (byte)idStatus;
-            task!.CtDescripcionEspera = message;
+
+            if (message.IsNullOrEmpty())
+                task.CfFechaFinalizacion = DateTime.Now;
+            else
+                task!.CtDescripcionEspera = message;
+
             _dbContext.Entry(task).State = EntityState.Modified;
             return await _dbContext.SaveChangesAsync() == 1;
         }

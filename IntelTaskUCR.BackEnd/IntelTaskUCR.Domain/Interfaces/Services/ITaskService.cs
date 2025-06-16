@@ -10,8 +10,10 @@ namespace IntelTaskUCR.Domain.Interfaces.Services
     public interface ITaskService
     {
         Task<List<Tasks>> ReadTaskAsync(int? idTask);
+        Task<List<Tasks>> ReadTasksPerUserAsync(int idUser);
         Task<bool> CreateTaskAsync(Dictionary<string, object?> newTask);
         Task<bool> UpdateTaskAsync(int id, Dictionary<string, object?> newData);
-        Task<bool> ChangeStatusTaskAsync(int idTask, int? idUser, int idStatus, object? additionalData);
+        Task<bool> ChangeStatusTaskAsync(int idTask, int idUser, int idStatus, object? additionalData);
+        Task<bool> ChangeStatusWithMessageAsync(int idTask, int idStatus, string message);
     }
 }

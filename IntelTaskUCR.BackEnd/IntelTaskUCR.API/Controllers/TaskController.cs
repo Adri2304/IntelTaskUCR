@@ -30,6 +30,21 @@ namespace IntelTaskUCR.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("user/{idUser}")]
+        public async Task<ActionResult> ReadTasksPerUserAsync(int idUser)
+        {
+            try
+            {
+                var response = await _taskService.ReadTasksPerUserAsync(idUser);
+                return response.IsNullOrEmpty() ? StatusCode(204) : StatusCode(200, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult> CreateTaskAsync([FromBody] TaskDTO data)

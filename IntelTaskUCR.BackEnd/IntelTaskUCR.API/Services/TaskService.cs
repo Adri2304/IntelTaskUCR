@@ -18,6 +18,10 @@ namespace IntelTaskUCR.API.Services
         {
             return await _taskRepository.ReadTaskAsync(idTask);
         }
+        public async Task<List<Tasks>> ReadTasksPerUserAsync(int idUser)
+        {
+            return await _taskRepository.ReadTasksPerUserAsync(idUser);
+        }
 
         public async Task<bool> CreateTaskAsync(Dictionary<string, object?> newTask)
         {
@@ -45,6 +49,9 @@ namespace IntelTaskUCR.API.Services
                     return await ChangeStatusWithMessageAsync(idTask, idStatus, message: additionalData.ToString());
                 }
             }
+            //Si no viene nada y solamente es cambiar el estado
+            if (idStatus == 7)
+                return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, "");
             return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus);
         }
 
@@ -52,12 +59,11 @@ namespace IntelTaskUCR.API.Services
         {
             switch (idStatus)
             {
-                case 4:
+                case 4: //En espera
                     return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, message);
 
-                case 6:
+                case 6://Rechazado
                     {
-                        //Falta actualizar la tabla de justificacion
                         if (await _rejectJustifyingRepository.CreateRejectJustifyingAsync(idTask, message))
                             return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus);
 

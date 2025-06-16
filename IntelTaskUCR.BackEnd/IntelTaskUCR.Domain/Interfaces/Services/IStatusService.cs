@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntelTaskUCR.Domain.Interfaces.Services
 {
-    public interface IAuthService
+    public interface IStatusService
     {
-        Task<bool> AutenticateUser(string userEmail, string password);
     }
 }

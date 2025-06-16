@@ -9,9 +9,9 @@ namespace IntelTaskUCR.API.Services
 
         public AuthService(IAuthRepository authRepository) => _authRepository = authRepository;
 
-        public async Task<bool> AutenticateUser(string userName, string password)
+        public async Task<bool> AutenticateUser(string userEmail, string password)
         {
-            var _password = await _authRepository.GetUserPasswordAsync(userName);
+            var _password = await _authRepository.GetUserPasswordAsync(userEmail);
             if (_password != null)
                 return password.Equals(_password);
 

@@ -16,10 +16,10 @@ namespace IntelTaskUCR.Infrastructure.Repositories
 
         public AuthRepository(IntelTaskUcrContext dbContext) => _dbContext = dbContext;
 
-        public async Task<string?> GetUserPasswordAsync(string username)
+        public async Task<string?> GetUserPasswordAsync(string userEmail)
         {
             var password = await _dbContext.TUsuarios
-                .Where(x => x.CtNombreUsuario == username)
+                .Where(x => x.CtCorreoUsuario == userEmail)
                 .Select(x => x.CtContrasenna)
                 .FirstOrDefaultAsync();
                 

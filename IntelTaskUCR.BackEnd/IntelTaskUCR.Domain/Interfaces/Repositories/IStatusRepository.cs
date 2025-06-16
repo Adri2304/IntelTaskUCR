@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntelTaskUCR.Domain.Interfaces.Repositories
 {
-    public interface IAuthRepository
+    public interface IStatusRepository
     {
-        Task<string?> GetUserPasswordAsync(string userEmail);
     }
 }

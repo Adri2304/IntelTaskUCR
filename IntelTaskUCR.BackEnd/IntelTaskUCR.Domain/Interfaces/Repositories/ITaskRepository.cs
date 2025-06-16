@@ -15,5 +15,6 @@ namespace IntelTaskUCR.Domain.Interfaces.Repositories
         Task<bool> UpdateTaskAsync(int idTask, Dictionary<string, object?> newData);
         Task<bool> ChangeStatusTaskAsync(int idTask, int idStatus);
         Task<bool> ChangeStatusTaskAsync(int idTask, int idStatus, string message);
+        Task<List<Tasks>> ReadTasksPerUserAsync(int idUser);
     }
 }

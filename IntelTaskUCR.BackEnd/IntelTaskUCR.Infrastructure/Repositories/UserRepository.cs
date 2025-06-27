@@ -39,7 +39,9 @@ namespace IntelTaskUCR.Infrastructure.Repositories
                 return result;
             }
 
-            var users = await _dbContext.TUsuarios.ToListAsync();
+            var users = await _dbContext.TUsuarios
+                .Where(x => x.CnIdRol == 6)
+                .ToListAsync();
 
             if (!users.IsNullOrEmpty())
             {

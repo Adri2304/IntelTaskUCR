@@ -57,6 +57,7 @@ namespace IntelTaskUCR.Infrastructure.Repositories
 
             var tasks = await _dbContext.TTareas
                 .Where(x => x.CnUsuarioAsignado == idUser || x.CnUsuarioCreador == idUser)
+                .OrderByDescending(x => x)
                 .ToListAsync();
 
             if (tasks != null)
@@ -110,6 +111,16 @@ namespace IntelTaskUCR.Infrastructure.Repositories
         {
             var task = await _dbContext.TTareas.FindAsync(idTask);
             task!.CnIdEstado = (byte)idStatus;
+            _dbContext.Entry(task).State = EntityState.Modified;
+            return await _dbContext.SaveChangesAsync() == 1;
+        }
+
+        public async Task<bool> ChangeStatusTaskAsync(int idTask, int idStatus, int idUsuarioAsignado)
+        {
+            var task = await _dbContext.TTareas.FindAsync(idTask);
+            task!.CnIdEstado = (byte)idStatus;
+            task.CnUsuarioAsignado = idUsuarioAsignado;
+            task.CfFechaAsignacion = DateTime.Now;
             _dbContext.Entry(task).State = EntityState.Modified;
             return await _dbContext.SaveChangesAsync() == 1;
         }

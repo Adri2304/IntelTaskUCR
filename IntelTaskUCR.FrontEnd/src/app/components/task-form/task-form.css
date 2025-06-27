@@ -1,0 +1,32 @@
+#principal_info{
+    display: flex;
+    flex-direction: column;
+}
+
+#secondary_info{
+    display: flex;
+    flex-direction: row;
+}
+
+#secondary_info mat-form-field {
+    flex: 1 1 auto;
+}
+
+#third_info{
+    display: flex;
+    flex-direction: row;
+}
+
+.info_items{
+    margin-right: 3px;
+}
+
+.info_itemsL:last-child{
+    margin-right: 0;
+}
+
+#fourth_info{
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}

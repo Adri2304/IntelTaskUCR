@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Seleccionar un usuario</h2>
+
+<mat-dialog-content [formGroup]="form">
+    <!-- Filtros -->
+    <div class="filtros">
+    <mat-form-field appearance="fill">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Correo</mat-label>
+        <input matInput formControlName="correo">
+    </mat-form-field>
+    </div>
+
+  <!-- Tabla de usuarios -->
+   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Radio para seleccionar -->
+         <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let user">
+            <mat-radio-button [checked]="userSeleccionado?.cnIdUsuario === user.cnIdUsuario" (change)="selectUser(user)">
+            </mat-radio-button>
+            </td>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let user">{{ user.ctNombreUsuario }}</td>
+        </ng-container>
+
+        <!-- Correo -->
+        <ng-container matColumnDef="correo">
+            <th mat-header-cell *matHeaderCellDef>Correo</th>
+            <td mat-cell *matCellDef="let user">{{ user.ctCorreoUsuario }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button matButton [mat-dialog-close]="">Cancelar</button>
+    <button matButton [mat-dialog-close]="userSeleccionado?.cnIdUsuario" [disabled]="!userSeleccionado">Asignar</button>
+</mat-dialog-actions>

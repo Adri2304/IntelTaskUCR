@@ -1,0 +1,85 @@
+#button_row{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    /* position: sticky; */
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #faf9fd;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); opcional, efecto flotante */
+    
+}
+
+.buttons{
+    margin-right: 40px;
+    font-size: small;
+    padding-right: 15px;
+    padding-left: 15px;
+    font-size: medium;
+}
+
+.buttons:last-child {
+  margin-right: 0;
+}
+
+mat-card{
+  display: flex ;
+  flex-direction: row;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px; 
+  height:150px;
+  background-color: #d9d9d9;
+  border-radius: 30px;
+}
+
+mat-checkbox{
+  align-self: center;
+  margin-right: 5px;
+}
+
+#info_task{
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+mat-card-header{
+  flex: 1 1 auto;
+  padding: 0.5%;
+}
+
+mat-card-content{
+  flex: 1 1 auto;
+  display: flex;
+  align-items: end;
+  padding-bottom: 3px !important;
+}
+
+mat-card-content select{
+  border-radius: 10px;
+  padding: 0px 10px;
+}
+
+.info_task_element{
+  margin-right: 60px;
+  padding: 0%;
+}
+
+#read_more_button{
+  display: flex;
+  align-self: center;
+  margin-right: 10px;
+  width: auto;
+  height: auto;
+}
+
+#read_more_button mat-icon {
+  font-size: larger;
+  width: auto;
+  height: auto;
+}

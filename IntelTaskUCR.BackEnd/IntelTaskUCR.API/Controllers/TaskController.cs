@@ -53,7 +53,7 @@ namespace IntelTaskUCR.API.Controllers
             {
                 var newTask = data.GetAtributesDictionary();
                 var response = await _taskService.CreateTaskAsync(newTask);
-                return response ? StatusCode(201, "Se creo creo la tarea correctamente") : StatusCode(204);
+                return response ? StatusCode(201) : StatusCode(204);
             }
             catch (Exception ex)
             {
@@ -61,15 +61,15 @@ namespace IntelTaskUCR.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         [Route("update/{idTask}")]
-        public async Task<ActionResult> UpdateTaskAsync(int idTask, [FromBody] TaskDTO data)
+        public async Task<ActionResult> UpdateTaskAsync(int idTask, [FromBody] UpdateTaskDTO data)
         {
             try
             {
                 var newData = data.GetAtributesDictionary();
                 var response = await _taskService.UpdateTaskAsync(idTask, newData);
-                return response ? StatusCode(200, "Actualizado correctamente") : StatusCode(204);
+                return response ? StatusCode(200) : StatusCode(204);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace IntelTaskUCR.API.Controllers
         public async Task<ActionResult> ChangeTaskStatusAsync(ChangeStatusDTO data)
         {
             var response = await _taskService.ChangeStatusTaskAsync(data.CnIdTarea, data.CnIdUsuario, data.CnIdEstado, data.AdditionalData);
-            return response ? StatusCode(200, "Cambiado exitosamente") : StatusCode(409);
+            return response ? StatusCode(200) : StatusCode(409);
         }
     }
 }

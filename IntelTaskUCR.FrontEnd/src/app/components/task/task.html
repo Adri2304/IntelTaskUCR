@@ -1,0 +1,82 @@
+<div id="button_row">
+    <button matButton="outlined" class="buttons" (click)="createTask()">Crear</button>
+    <button matButton="outlined" class="buttons" (click)="updateTask()">Editar</button>
+    <button matButton="outlined" class="buttons" (click)="deleteTask()">Eliminar</button>
+    <button matButton="outlined" class="buttons">Segmentar</button>
+</div>
+
+<div id="Task_space">
+    @for (task of tasks; track task.cnIdTarea) {
+        <mat-card class="example-card" appearance="outlined">
+
+            <mat-checkbox
+            [checked]="selectedTaskId === task.cnIdTarea"
+            (change)="onCheckboxChange(task.cnIdTarea)"
+            ></mat-checkbox>
+
+            <!-- Informacion de la tarea -->
+            <div id="info_task">
+                <!-- Encabezados de la tarea -->
+                <mat-card-header>
+                    <mat-card-title-group>
+                        <mat-card-title><strong><u>{{task.ctTituloTarea}}</u></strong></mat-card-title>
+                        <mat-card-subtitle>{{task.ctDescripcionTarea}}</mat-card-subtitle>
+                    </mat-card-title-group>
+                </mat-card-header>
+
+                <!-- Informacion principal de la tarea -->
+                <mat-card-content>
+                    <!-- Fecha limite -->
+                     <div class="info_task_element">
+                         <span style="color: rgb(213, 0, 0);">Vencimiento:</span>
+                         <span>{{task.cfFechaAsignacion | date: 'yyyy-MM-dd HH:mm'}}</span>
+                     </div>
+
+                    <!-- Estados -->
+                    <div class="info_task_element">
+                        <span>Estado:</span>
+
+                        <select
+                        [disabled]="!puedeModificarEstado(task)"
+                        (change)="cambioEstado(task, $event)"
+                        >
+                            <option [value]="task.cnIdEstado" selected>
+                                {{ nombresEstados[task.cnIdEstado] }}
+                            </option>
+                            <option *ngFor="let estadoId of task.estadosDisponibles" [value]="estadoId">
+                                {{ nombresEstados[estadoId] }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- <div class="info_task_element">
+                        <span>Estado:</span>
+                        <select name="states">
+                                <option value={{task.cnIdEstado}}>{{task.cnIdEstado}}</option>
+                                @for (item of task.estadosDisponibles; track $index) {
+                                    <option value={{item}}>{{item}}</option>
+                                }
+                        </select>
+                    </div> -->
+                    
+                    <!-- Prioridad -->
+                     <div class="info_task_element">
+                         <span>Prioridad: {{task.cnIdPrioridad}}</span>
+                     </div>
+
+                    <!-- Complejidad -->
+                     <div class="info_task_element">
+                         <span>Complejidad: {{task.cnIdComplejidad}}</span>
+                     </div>
+
+                </mat-card-content>
+            </div>
+
+            <!-- Boton de leer mas -->
+            <button matIconButton id="read_more_button">
+                <mat-icon>read_more</mat-icon>
+            </button>
+            
+        </mat-card>
+    }
+</div>

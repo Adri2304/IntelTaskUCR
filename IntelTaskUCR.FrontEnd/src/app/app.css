@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header, app-toolbar {
+  flex: 0 0 auto;
+}
+
+#div-sidenav {
+  flex: 1 1 auto;
+  overflow: hidden;
+}

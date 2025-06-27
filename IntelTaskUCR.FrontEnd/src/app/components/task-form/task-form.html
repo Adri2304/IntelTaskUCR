@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>Formulario de tareas</h2>
+
+<mat-dialog-content class="mat-typography">
+
+  <div id="principal_info">
+    <mat-form-field>
+      <mat-label>Titulo</mat-label>
+      <input matInput [(ngModel)]="title">
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Descripcion</mat-label>
+      <textarea matInput [(ngModel)]="description"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div id="secondary_info">
+    <mat-form-field class="info_items">
+      <mat-label>Prioridad</mat-label>
+      <mat-select [(value)]="prioritySelected">
+        <mat-option value="1">Baja</mat-option>
+        <mat-option value="2">Media</mat-option>
+        <mat-option value="3">Alta</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field class="info_items">
+      <mat-label>Complejidad</mat-label>
+      <mat-select [(value)]="complexitySelected">
+        <mat-option value="1">Muy baja</mat-option>
+        <mat-option value="2">Baja</mat-option>
+        <mat-option value="3">Media</mat-option>
+        <mat-option value="4">Alta</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div id="third_info">
+    <mat-form-field class="info_items">
+      <mat-label>Fecha limite</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="limitDate">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>  
+    
+    <mat-form-field appearance="fill" class="info_items">
+      <mat-label>Hora limite</mat-label>
+      <input matInput type="time" [(ngModel)]="selectedTime">
+    </mat-form-field>
+  </div>
+
+  <div id="fourth_info">
+    <mat-form-field id="gisNumber">
+      <mat-label>Numero de GIS</mat-label>
+      <input matInput [(ngModel)]="gisNumber">
+    </mat-form-field>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton [mat-dialog-close]="false">Cancelar</button>
+  <button matButton (click)="returnData()" cdkFocusInitial>Confirmar</button>
+</mat-dialog-actions>

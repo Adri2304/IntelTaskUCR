@@ -9,10 +9,12 @@ namespace IntelTaskUCR.API.Services
     {
         private readonly ITaskRepository _taskRepository;
         private readonly IRejectJustifyingRepository _rejectJustifyingRepository;
-        public TaskService(ITaskRepository taskRepository, IRejectJustifyingRepository rejectJustifyingRepository)
+        private readonly IMachineStateService _MachineStateService;
+        public TaskService(ITaskRepository taskRepository, IRejectJustifyingRepository rejectJustifyingRepository, IMachineStateService machineStateService)
         {
             _taskRepository = taskRepository;
             _rejectJustifyingRepository = rejectJustifyingRepository;
+            _MachineStateService = machineStateService;
         }
         public async Task<List<Tasks>> ReadTaskAsync(int? idTask)
         {
@@ -20,7 +22,9 @@ namespace IntelTaskUCR.API.Services
         }
         public async Task<List<Tasks>> ReadTasksPerUserAsync(int idUser)
         {
-            return await _taskRepository.ReadTasksPerUserAsync(idUser);
+            var tasks = await _taskRepository.ReadTasksPerUserAsync(idUser);
+            var filteredTasks = tasks.Where(x => x.CnIdEstado != 9).ToList();
+            return filteredTasks;
         }
 
         public async Task<bool> CreateTaskAsync(Dictionary<string, object?> newTask)
@@ -41,12 +45,12 @@ namespace IntelTaskUCR.API.Services
                 if (int.TryParse(additionalData.ToString(), out int assignedUser))
                 {
                     //Si viene id para asignar usuario
-                    return false;
+                    return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, assignedUser);
                 }
                 else
                 {
                     //Si viene mensaje
-                    return await ChangeStatusWithMessageAsync(idTask, idStatus, message: additionalData.ToString());
+                    return await ChangeStatusWithMessageAsync(idTask, idStatus, message: additionalData.ToString()!);
                 }
             }
             //Si no viene nada y solamente es cambiar el estado

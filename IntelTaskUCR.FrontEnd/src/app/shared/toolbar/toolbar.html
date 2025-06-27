@@ -1,13 +1,17 @@
-<mat-toolbar class="background">
-  <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon">
-    <mat-icon>menu</mat-icon>
+<mat-toolbar>
+  <button routerLink="task" routerLinkActive="activo">
+    <span style="font-size: x-large;">Tareas</span>
   </button>
-  <span>My App</span>
-  <span class="example-spacer"></span>
-  <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
+  
+  <button routerLink="request" routerLinkActive="activo">
+    <span style="font-size: x-large;">Permisos</span>
   </button>
-  <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
-    <mat-icon>share</mat-icon>
+
+  <button routerLink="notification" routerLinkActive="activo">
+    <span style="font-size: x-large;">Notificaciones</span>
+  </button>
+
+  <button routerLink="report" routerLinkActive="activo">
+    <span style="font-size: x-large;">Reportes</span>
   </button>
 </mat-toolbar>

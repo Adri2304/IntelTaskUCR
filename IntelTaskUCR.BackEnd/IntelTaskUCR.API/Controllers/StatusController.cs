@@ -14,13 +14,13 @@ namespace IntelTaskUCR.API.Controllers
         public StatusController(IMachineStateService machineStateService) => _MachineStateService = machineStateService;
 
         [HttpGet]
-        [Route("valid")]
-        public ActionResult GetValidStatesAsync([FromQuery] int idState)
+        [Route("valid/{idState}")]
+        public ActionResult GetValidStatesAsync(int idState)
         {
             try
             {
                 var validStates = _MachineStateService.ObtenerTransicionesValidas((TaskStates)idState);
-                return !validStates.IsNullOrEmpty() ? StatusCode(200, validStates) : StatusCode(409, "Error con los estados");
+                return !validStates.IsNullOrEmpty() ? StatusCode(200, validStates) : StatusCode(409);
             }
             catch (Exception ex)
             {

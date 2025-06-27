@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  {{data.body}}
+</mat-dialog-content>
+<mat-dialog-actions>
+  @if (data.rejectButton != "") {
+    <button matButton [mat-dialog-close]="false">{{data.rejectButton}}</button>
+  }
+  <button matButton [mat-dialog-close]="true" cdkFocusInitial>{{data.successButton}}</button>
+</mat-dialog-actions>

@@ -18,12 +18,32 @@ namespace IntelTaskUCR.Infrastructure.Repositories
 
         public async Task<string?> GetUserPasswordAsync(string userEmail)
         {
-            var password = await _dbContext.TUsuarios
+            var data = await _dbContext.TUsuarios
                 .Where(x => x.CtCorreoUsuario == userEmail)
                 .Select(x => x.CtContrasenna)
                 .FirstOrDefaultAsync();
                 
-            return password;
+            return data;
+        }
+
+        public async Task<Dictionary<string, int>> GetAuthenticateUserInfoAsync(string userEmail)
+        {
+            var result = await _dbContext.TUsuarios
+                .Where(x => x.CtCorreoUsuario == userEmail)
+                .Select(x => new {
+                    x.CnIdRol,
+                    x.CnIdUsuario
+                })
+                .FirstOrDefaultAsync();
+
+            if (result == null)
+                return new Dictionary<string, int>();
+
+            return new Dictionary<string, int>
+            {
+                { "cnIdRol", result.CnIdRol },
+                { "cnIdUsuario", result.CnIdUsuario }
+            };
         }
     }
 }

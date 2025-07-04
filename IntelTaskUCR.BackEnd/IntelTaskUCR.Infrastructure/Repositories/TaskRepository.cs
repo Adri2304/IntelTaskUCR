@@ -57,7 +57,7 @@ namespace IntelTaskUCR.Infrastructure.Repositories
 
             var tasks = await _dbContext.TTareas
                 .Where(x => x.CnUsuarioAsignado == idUser || x.CnUsuarioCreador == idUser)
-                .OrderByDescending(x => x)
+                //.OrderByDescending(x => x)
                 .ToListAsync();
 
             if (tasks != null)

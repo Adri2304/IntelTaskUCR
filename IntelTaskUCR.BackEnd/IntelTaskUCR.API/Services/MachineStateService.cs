@@ -27,6 +27,9 @@ namespace IntelTaskUCR.API.Services
                 .Permit(TaskStates.Rechazada, TaskStates.Rechazada)
                 .Permit(TaskStates.Terminado, TaskStates.Terminado);
 
+            stateMachine.Configure(TaskStates.Rechazada)
+                .Permit(TaskStates.Asignada, TaskStates.Asignada);
+
 
             // Falta terminar con el estado incumplimiento y el rechazado
 

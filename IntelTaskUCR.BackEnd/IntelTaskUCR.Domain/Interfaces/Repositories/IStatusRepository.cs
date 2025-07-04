@@ -8,5 +8,8 @@ namespace IntelTaskUCR.Domain.Interfaces.Repositories
 {
     public interface IStatusRepository
     {
+        Task<IEnumerable<object>> ReadStatesAsync();
+        Task<IEnumerable<object>> ReadComplexitiesAsync();
+        Task<IEnumerable<object>> ReadPrioritiesAsync();
     }
 }

@@ -7,3 +7,17 @@ mat-sidenav{
 mat-sidenav-container {
   height: 100%;
 }
+
+.example-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  margin: 0px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

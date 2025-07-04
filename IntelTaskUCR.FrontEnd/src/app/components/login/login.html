@@ -1,0 +1,45 @@
+<div class="login-container">
+  <div class="background-overlay"></div>
+
+  <header class="header">
+    <img src="assets/Logo.png" alt="Poder Judicial" class="logo-header" />
+    <img src="assets/IntelTaskLogoBlanco.png" alt="Poder Judicial" class="logo-header" />
+  </header>
+
+  <div class="login-box mat-elevation-z8">
+    <img src="assets\IntelTaskLogo.png" alt="IntelTask UCR" class="logo-inteltask" />
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Correo</mat-label>
+        <input matInput formControlName="correo" required />
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="password"
+          required
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width">Iniciar sesión</button>
+    </form>
+
+    <a class="forgot-password">¿Has olvidado tu contraseña?</a>
+  </div>
+
+  <footer class="footer">
+    <p style="font-size: medium; margin: 3px;">
+      <strong>Aviso Legal</strong><br />
+      Conforme lo establece el Art. 37 del “Reglamento para el Tratamiento de los Datos
+      Personales contenidos en Bases de Datos de acceso público del Poder Judicial”, aprobado
+      por Corte Plena en la sesión No. 33-2024 del 29 de julio de 2024, Art. XV.<br /><br />
+      “Se prohíbe a todas las personas físicas y jurídicas generar respaldos particulares de las bases de datos del Poder Judicial. Lo anterior incluye la construcción de bases de datos paralelas mediante la utilización de herramientas robotizadas, de inteligencia artificial o que de cualquier forma comprometan la finalidad de las bases de datos y la seguridad de la información”
+    </p>
+  </footer>
+</div>

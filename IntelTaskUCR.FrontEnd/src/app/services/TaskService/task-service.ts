@@ -4,6 +4,7 @@ import { ITask } from '../../models/itask';
 import { Observable } from 'rxjs';
 import { IChangeStateTask } from '../../models/ichange-state-task';
 import { IUpdateTask } from '../../models/iupdate-task';
+import { IFilterTask } from '../../models/ifilter-task';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,9 @@ export class TaskService {
 
   updateTask(idTask: number, data: IUpdateTask): Observable<any>{
     return this.httpClient.patch<any>(`${this.URL}/update/${idTask}`, data);
+  }
+
+  filterTaskPerUser(idUser: number, body: IFilterTask): Observable<any> {
+    return this.httpClient.post<any>(`${this.URL}/filter/${idUser}`, body);
   }
 }

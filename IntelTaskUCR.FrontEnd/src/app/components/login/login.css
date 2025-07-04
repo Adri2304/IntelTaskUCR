@@ -1,0 +1,71 @@
+.login-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Roboto, sans-serif;
+}
+
+.background-overlay {
+  position: absolute;
+  inset: 0;
+  background: url('./../../../assets/FondoLogin.jpg') no-repeat center center / cover;
+  z-index: 0;
+}
+
+.header {
+  background-color: #05446c;
+  width: 100%;
+
+  box-sizing: border-box;
+  z-index: 1;
+
+  .logo-header {
+    height: 70px;
+  }
+}
+
+.login-box {
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 320px;
+  text-align: center;
+
+  .logo-inteltask {
+    max-height: 50px;
+    margin-bottom: 20px;
+  }
+
+  .full-width {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .forgot-password {
+    display: block;
+    margin-top: 10px;
+    color: #05446c;
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.footer {
+  z-index: 1;
+  background-color: #05446c;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  padding: 20px;
+  width: 100%;
+}

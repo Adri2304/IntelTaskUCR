@@ -1,8 +1,15 @@
 <div id="button_row">
-    <button matButton="outlined" class="buttons" (click)="createTask()">Crear</button>
-    <button matButton="outlined" class="buttons" (click)="updateTask()">Editar</button>
-    <button matButton="outlined" class="buttons" (click)="deleteTask()">Eliminar</button>
-    <button matButton="outlined" class="buttons">Segmentar</button>
+    @if (idRolUsuarioLogueado === 6) {
+        <button matButton="outlined" class="buttons" disabled (click)="createTask()">Crear</button>
+        <button matButton="outlined" class="buttons" disabled (click)="updateTask()">Editar</button>
+        <button matButton="outlined" class="buttons" disabled (click)="deleteTask()">Eliminar</button>
+        <button matButton="outlined" class="buttons" disabled >Segmentar</button>
+    } @else {
+        <button matButton="outlined" class="buttons" (click)="createTask()">Crear</button>
+        <button matButton="outlined" class="buttons" (click)="updateTask()">Editar</button>
+        <button matButton="outlined" class="buttons" (click)="deleteTask()">Eliminar</button>
+        <button matButton="outlined" class="buttons">Segmentar</button>
+    }
 </div>
 
 <div id="Task_space">
@@ -34,7 +41,9 @@
 
                     <!-- Estados -->
                     <div class="info_task_element">
-                        <span>Estado:</span>
+                        <strong>
+                            <span>Estado: </span>
+                        </strong>
 
                         <select
                         [disabled]="!puedeModificarEstado(task)"
@@ -48,25 +57,21 @@
                             </option>
                         </select>
                     </div>
-
-                    <!-- <div class="info_task_element">
-                        <span>Estado:</span>
-                        <select name="states">
-                                <option value={{task.cnIdEstado}}>{{task.cnIdEstado}}</option>
-                                @for (item of task.estadosDisponibles; track $index) {
-                                    <option value={{item}}>{{item}}</option>
-                                }
-                        </select>
-                    </div> -->
                     
                     <!-- Prioridad -->
                      <div class="info_task_element">
-                         <span>Prioridad: {{task.cnIdPrioridad}}</span>
+                        <strong>
+                            <span>Prioridad: </span>
+                        </strong>
+                        <span>{{nombresPrioridades[task.cnIdPrioridad]}}</span>
                      </div>
 
                     <!-- Complejidad -->
                      <div class="info_task_element">
-                         <span>Complejidad: {{task.cnIdComplejidad}}</span>
+                        <strong>
+                            <span>Complejidad: </span>
+                        </strong>
+                        <span>{{nombresComplejidades[task.cnIdComplejidad]}}</span>
                      </div>
 
                 </mat-card-content>

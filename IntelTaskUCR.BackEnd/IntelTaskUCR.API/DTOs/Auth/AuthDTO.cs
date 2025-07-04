@@ -1,4 +1,4 @@
-﻿namespace IntelTaskUCR.API.DTOs
+﻿namespace IntelTaskUCR.API.DTOs.Auth
 {
     public class AuthDTO
     {

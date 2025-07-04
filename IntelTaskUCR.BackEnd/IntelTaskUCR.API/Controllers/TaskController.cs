@@ -84,5 +84,20 @@ namespace IntelTaskUCR.API.Controllers
             var response = await _taskService.ChangeStatusTaskAsync(data.CnIdTarea, data.CnIdUsuario, data.CnIdEstado, data.AdditionalData);
             return response ? StatusCode(200) : StatusCode(409);
         }
+
+        [HttpPost]
+        [Route("filter/{idUser}")]
+        public async Task<ActionResult> filterTaskPerUser(int idUser, [FromBody] FilterTaskDTO body)
+        {
+            try
+            {
+                var response = await _taskService.filterTaskPerUser(idUser, body.States, body.Descending);
+                return response.IsNullOrEmpty() ? StatusCode(204) : StatusCode(200, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

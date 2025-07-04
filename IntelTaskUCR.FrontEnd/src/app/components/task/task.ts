@@ -16,6 +16,14 @@ import { Stateservice } from '../../services/stateService/stateservice';
 import { forkJoin, firstValueFrom  } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AsignarForm } from '../asignar-form/asignar-form';
+import { EnEsperaForm } from '../en-espera-form/en-espera-form';
+import { Authservice } from '../../services/AuthService/authservice';
+import { Router } from '@angular/router';
+import { IAuthResponse } from '../../models/iauth-response';
+import { IStates } from '../../models/istates';
+import { IFilterTask } from '../../models/ifilter-task';
+import { IComplexities } from '../../models/icomplexities';
+import { IPriorities } from '../../models/ipriorities';
 
 @Component({
   selector: 'app-task',
@@ -25,70 +33,48 @@ import { AsignarForm } from '../asignar-form/asignar-form';
   styleUrl: './task.css'
 })
 export class Task implements OnInit{
-  tasks: ITask[] = [];
-  selectedTaskId: number = 0;
+  authService = inject(Authservice);
   taskService: TaskService = inject(TaskService)
-  dialog = inject(MatDialog);
   stateService = inject(Stateservice);
-  idUsuarioLogueado = 7;
+  dialog = inject(MatDialog);
+  router = inject(Router);
 
-  nombresEstados: { [id: number]: string } = {
-    1: 'Registrada',
-    2: 'Asignada',
-    3: 'En proceso',
-    4: 'En espera',
-    5: 'En revisión',
-    6: 'Rechazada',
-    7: 'Terminada',
-    8: 'Incumplimiento'
-  };
+  idUsuarioLogueado = 0;
+  idRolUsuarioLogueado = 0;
+  selectedTaskId: number = 0;
+  tasks: ITask[] = [];
+  selectedStates: number[] = [];
+  nombresEstados: { [id: number]: string } = {};
+  nombresComplejidades: { [id: number]: string } = {};
+  nombresPrioridades: { [id: number]: string } = {};
 
   ngOnInit(): void {
-    this.cargar_tareas();
+    const usuario = this.authService.obtenerUsuario();
+
+    if (!usuario) {
+      console.warn('Usuario no autenticado');
+      this.router.navigate(["/login"]);
+      return;
+    }
+
+    this.idUsuarioLogueado = usuario.cnIdUsuario;
+    this.idRolUsuarioLogueado = usuario.cnIdRol;    
+
+    this.cargarEstados();
+    this.cargarComplejidades();
+    this.cargarPrioridades();
+    
+    //Suscribirse al servicio de los estados del sidenav
+    this.stateService.selectedIds$.subscribe((ids) => {
+      this.selectedStates = ids;
+      console.log('IDs actualizados desde sidenav:', ids);
+      this.cargar_tareas();
+    });
+    
   }
 
   onCheckboxChange(taskId: number) {
   this.selectedTaskId = this.selectedTaskId === taskId ? 0 : taskId;
-  }
-
-  cargar_tareas() {
-    this.taskService.ReadTaskPerUser(this.idUsuarioLogueado).subscribe({
-      next: (data) => {
-        if (data === null) {
-          return;
-        }
-        // Paso 1: convertir fechas de las tareas
-        const tareas: ITask[] = data.map((task: ITask) => ({
-          ...task,
-          cfFechaAsignacion: task.cfFechaAsignacion ? new Date(task.cfFechaAsignacion) : null,
-          cfFechaLimite: new Date(task.cfFechaLimite),
-          cfFechaFinalizacion: task.cfFechaFinalizacion ? new Date(task.cfFechaFinalizacion) : null,
-        }));
-        
-        // Paso 2: crear observables para estados posteriores
-        const estadosObservables = tareas.map((task) =>
-          this.stateService.getEstadosPosteriores(task.cnIdEstado)
-        );
-
-        // Paso 3: esperar todas las respuestas
-        forkJoin(estadosObservables).subscribe({
-          next: (estadosPorTarea: number[][]) => {
-            this.tasks = tareas.map((task, i) => ({
-              ...task,
-              estadosDisponibles: estadosPorTarea[i], // Este campo es nuevo, opcional en ITask
-            }));
-          },
-          error: (error) => {
-            console.error('Error consultando estados posteriores:', error);
-          }
-        });
-        
-      },
-      error: (err) => {
-        console.error(err);
-        alert("Error al cargar tareas");
-      }
-    });
   }
 
   createTask(){
@@ -262,6 +248,12 @@ export class Task implements OnInit{
       return;
     }
 
+    if (task.cnIdEstado === 6 && nuevoEstado === "2") {
+      if(!await this.cambioEstadoNormal(task, nuevoEstado)){}
+        selectElement.value = String(task.cnIdEstado);
+      return;
+    }
+
     switch (nuevoEstado) {
       case "2":
         if(!await this.asignarTarea(task, nuevoEstado))
@@ -269,22 +261,41 @@ export class Task implements OnInit{
         break;
 
       case "4":
-        this.tareaEnEspera();
+        if(!await this.tareaEnEspera(task, nuevoEstado))
+          selectElement.value = String(task.cnIdEstado);
         break;
       case "6":
-        this.rechazarTarea();
+        if(!await this.rechazarTarea(task, nuevoEstado))
+          selectElement.value = String(task.cnIdEstado);
         break;
       default:
+        if(!await this.cambioEstadoNormal(task, nuevoEstado))
+          selectElement.value = String(task.cnIdEstado);
         break;
+    }
+  }
+
+  async cambioEstadoNormal(task: ITask, nuevoEstado: string): Promise<boolean>{
+    const data: IChangeStateTask = {
+      cnIdTarea: task.cnIdTarea,
+      cnIdUsuario: this.idUsuarioLogueado,
+      cnIdEstado: Number(nuevoEstado),
+      additionalData: null
+    };
+
+    try {
+      await firstValueFrom(this.taskService.changeTaskState(data));
+      this.cargar_tareas(); // esto puede o no ser await, según su definición
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
     }
   }
 
   async asignarTarea(task: ITask, nuevoEstado: string): Promise<boolean> {
     const dialogRef = this.dialog.open(AsignarForm);
-
     const idUser: number | undefined = await firstValueFrom(dialogRef.afterClosed());
-
-    console.log("El nombreUsuario es: ", idUser);
 
     if (idUser === undefined) {
       return false;
@@ -305,21 +316,168 @@ export class Task implements OnInit{
       console.error(err);
       return false;
     }
-
-    console.log(data);
-    
-    return true
   }
 
-  tareaEnEspera(){
-    alert("Poner tarea en espera");
+  async tareaEnEspera(task: ITask, nuevoEstado: string){
+    const dialogRef = this.dialog.open(EnEsperaForm);
+    const mensaje: string = await firstValueFrom(dialogRef.afterClosed());
+
+
+    if (!mensaje) {
+      return false;
+    }
+
+    const data: IChangeStateTask = {
+      cnIdTarea: task.cnIdTarea,
+      cnIdUsuario: this.idUsuarioLogueado,
+      cnIdEstado: Number(nuevoEstado),
+      additionalData: mensaje
+    };
+
+    try {
+      await firstValueFrom(this.taskService.changeTaskState(data));
+      this.cargar_tareas();
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   }
 
-  rechazarTarea(){
-    alert("rechazar tarea");
+  async rechazarTarea(task: ITask, nuevoEstado: string){
+    const dialogRef = this.dialog.open(EnEsperaForm);
+    const mensaje: string = await firstValueFrom(dialogRef.afterClosed());
+
+
+    if (!mensaje) {
+      return false;
+    }
+
+    const data: IChangeStateTask = {
+      cnIdTarea: task.cnIdTarea,
+      cnIdUsuario: this.idUsuarioLogueado,
+      cnIdEstado: Number(nuevoEstado),
+      additionalData: mensaje
+    };
+
+    try {
+      await firstValueFrom(this.taskService.changeTaskState(data));
+      this.cargar_tareas();
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   }
 
   //Funciones auxiliares
+  cargar_tareas() {
+    const body: IFilterTask = {
+      states: this.selectedStates,
+      descending: true
+    }
+
+    this.taskService.filterTaskPerUser(this.idUsuarioLogueado, body).subscribe({
+      next: (data) => {
+        if (data === null) {
+          this.tasks = [];
+          return;
+        }
+
+        // convertir fechas de las tareas
+        const tareas: ITask[] = data.map((task: ITask) => ({
+          ...task,
+          cfFechaAsignacion: task.cfFechaAsignacion ? new Date(task.cfFechaAsignacion) : null,
+          cfFechaLimite: new Date(task.cfFechaLimite),
+          cfFechaFinalizacion: task.cfFechaFinalizacion ? new Date(task.cfFechaFinalizacion) : null,
+        }));
+        
+        // crear observables para estados posteriores
+        const estadosObservables = tareas.map((task) =>
+          this.stateService.getEstadosPosteriores(task.cnIdEstado)
+        );
+
+        // esperar todas las respuestas
+        forkJoin(estadosObservables).subscribe({
+          next: (estadosPorTarea: number[][]) => {
+            this.tasks = tareas.map((task, i) => ({
+              ...task,
+              estadosDisponibles: estadosPorTarea[i],
+            }));
+          },
+          error: (error) => {
+            console.error('Error consultando estados posteriores:', error);
+          }
+        });
+        
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Error al cargar tareas");
+      }
+    });
+  }
+
+  cargarEstados(){
+    this.stateService.getAllStates().subscribe({
+      next: (res: IStates[]) => {
+        res.forEach(element => {
+          this.nombresEstados[element.cnIdEstado] = element.ctEstado
+        });
+      },
+      error: () => {
+        this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Error",
+              body: "Error al cargar los estados",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
+      }
+    });
+  }
+
+  cargarComplejidades(){
+    this.stateService.getAllComplexities().subscribe({
+      next: (res: IComplexities[]) => {
+        res.forEach(element => {
+          this.nombresComplejidades[element.cnIdComplejidad] = element.ctNombre
+        });
+      },
+      error: () => {
+        this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Error",
+              body: "Error al cargar las complejidades",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
+      }
+    });
+  }
+
+  cargarPrioridades(){
+    this.stateService.getAllPriorities().subscribe({
+      next: (res: IPriorities[]) => {
+        res.forEach(element => {
+          this.nombresPrioridades[element.cnIdPrioridad] = element.ctNombrePrioridad
+        });
+      },
+      error: () => {
+        this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Error",
+              body: "Error al cargar los estados",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
+      }
+    });
+  }
+
   puedeModificarEstado(task: ITask): boolean {
     const estado = task.cnIdEstado;
     const esCreador = task.cnUsuarioCreador === this.idUsuarioLogueado;
@@ -338,4 +496,5 @@ export class Task implements OnInit{
 
     return false;
   }
+
 }

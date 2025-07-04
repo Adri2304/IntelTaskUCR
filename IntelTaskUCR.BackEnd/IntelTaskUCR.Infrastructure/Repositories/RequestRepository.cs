@@ -85,7 +85,7 @@ namespace IntelTaskUCR.Infrastructure.Repositories
                     await transaction.CommitAsync();
                     return result == 1;
 
-                } catch (Exception ex)
+                } catch (Exception)
                 {
                     await transaction.RollbackAsync();
                     return false;

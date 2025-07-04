@@ -1,7 +1,19 @@
 <mat-sidenav-container>
   <mat-sidenav opened mode="side">
-    <!-- Esto es el contenido del side -->
-    <h4 style="text-align: center;">Filtros</h4>
+
+    <!-- <h4 style="text-align: center;">Filtros</h4> -->
+
+    <section class="example-section" [formGroup]="estados">
+      <h4>Filtrar por estados</h4>
+      <div class="checkbox-group">
+        @for (item of estadosTareas; track item.cnIdEstado) {
+          <mat-checkbox formControlName="{{item.cnIdEstado}}">
+            {{ item.ctEstado }}
+          </mat-checkbox>
+        }
+      </div>
+    </section>
+
   </mat-sidenav>
 
   <mat-sidenav-content>

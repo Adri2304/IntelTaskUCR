@@ -1,9 +1,17 @@
-<header style="background-color: #05446c;">
-  <h1 style="color: white;">IntelTaskUCR</h1>
-</header>
+<!-- Mostrar solo si NO estamos en login -->
+<!-- <ng-container *ngIf="mostrarLayout">
+  <header style="background-color: #05446c;">
+    <h1 style="color: white;">IntelTaskUCR</h1>
+  </header>
 
-<app-toolbar/>
+  <app-toolbar></app-toolbar>
 
-<div id="div-sidenav">
-  <app-sidenav />
-</div>
+  <div id="div-sidenav">
+    <app-sidenav></app-sidenav>
+  </div>
+</ng-container> -->
+
+<!-- Aquí SIEMPRE se carga la vista de rutas -->
+<!-- <router-outlet></router-outlet> -->
+
+<router-outlet></router-outlet>

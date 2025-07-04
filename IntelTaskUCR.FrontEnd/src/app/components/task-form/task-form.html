@@ -1,65 +1,94 @@
-<h2 mat-dialog-title>Formulario de tareas</h2>
+<form #taskForm="ngForm">
+  <h2 mat-dialog-title>Formulario de tareas</h2>
 
-<mat-dialog-content class="mat-typography">
+  <mat-dialog-content class="mat-typography">
 
-  <div id="principal_info">
-    <mat-form-field>
-      <mat-label>Titulo</mat-label>
-      <input matInput [(ngModel)]="title">
-    </mat-form-field>
-  
-    <mat-form-field>
-      <mat-label>Descripcion</mat-label>
-      <textarea matInput [(ngModel)]="description"></textarea>
-    </mat-form-field>
-  </div>
+    <div id="principal_info">
+      <!-- Título -->
+      <mat-form-field>
+        <mat-label>Titulo</mat-label>
+        <input matInput [(ngModel)]="title" name="title" required minlength="3" #titleField="ngModel">
+        <mat-error *ngIf="titleField.invalid && titleField.touched">
+          El título es obligatorio y debe tener al menos 3 caracteres.
+        </mat-error>
+      </mat-form-field>
 
-  <div id="secondary_info">
-    <mat-form-field class="info_items">
-      <mat-label>Prioridad</mat-label>
-      <mat-select [(value)]="prioritySelected">
-        <mat-option value="1">Baja</mat-option>
-        <mat-option value="2">Media</mat-option>
-        <mat-option value="3">Alta</mat-option>
-      </mat-select>
-    </mat-form-field>
-  
-    <mat-form-field class="info_items">
-      <mat-label>Complejidad</mat-label>
-      <mat-select [(value)]="complexitySelected">
-        <mat-option value="1">Muy baja</mat-option>
-        <mat-option value="2">Baja</mat-option>
-        <mat-option value="3">Media</mat-option>
-        <mat-option value="4">Alta</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+      <!-- Descripción -->
+      <mat-form-field>
+        <mat-label>Descripcion</mat-label>
+        <textarea matInput [(ngModel)]="description" name="description" required #descField="ngModel"></textarea>
+        <mat-error *ngIf="descField.invalid && descField.touched">
+          La descripción es obligatoria.
+        </mat-error>
+      </mat-form-field>
+    </div>
 
-  <div id="third_info">
-    <mat-form-field class="info_items">
-      <mat-label>Fecha limite</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="limitDate">
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>  
-    
-    <mat-form-field appearance="fill" class="info_items">
-      <mat-label>Hora limite</mat-label>
-      <input matInput type="time" [(ngModel)]="selectedTime">
-    </mat-form-field>
-  </div>
+    <div id="secondary_info">
+      <!-- Prioridad -->
+      <mat-form-field class="info_items">
+        <mat-label>Prioridad</mat-label>
+        <mat-select [(ngModel)]="prioritySelected" name="prioritySelected" required #priorityField="ngModel">
+          @for (item of prioridades; track item.cnIdPrioridad) {
+            <mat-option value="{{item.cnIdPrioridad}}">{{item.ctNombrePrioridad}}</mat-option>
+          }
+        </mat-select>
+        <mat-error *ngIf="priorityField.invalid && priorityField.touched">
+          Selecciona una prioridad.
+        </mat-error>
+      </mat-form-field>
 
-  <div id="fourth_info">
-    <mat-form-field id="gisNumber">
-      <mat-label>Numero de GIS</mat-label>
-      <input matInput [(ngModel)]="gisNumber">
-    </mat-form-field>
-  </div>
+      <!-- Complejidad -->
+      <mat-form-field class="info_items">
+        <mat-label>Complejidad</mat-label>
+        <mat-select [(ngModel)]="complexitySelected" name="complexitySelected" required #complexityField="ngModel">
+          @for (item of complejidades; track item.cnIdComplejidad) {
+            <mat-option value="{{item.cnIdComplejidad}}">{{item.ctNombre}}</mat-option>
+          }
+        </mat-select>
+        <mat-error *ngIf="complexityField.invalid && complexityField.touched">
+          Selecciona una complejidad.
+        </mat-error>
+      </mat-form-field>
+    </div>
 
-</mat-dialog-content>
+    <div id="third_info">
+      <!-- Fecha límite -->
+      <mat-form-field class="info_items">
+        <mat-label>Fecha limite</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="limitDate" [min]="minDate"
+               name="limitDate" required #dateField="ngModel">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="dateField.invalid && dateField.touched">
+          Fecha obligatoria y no puede ser anterior a hoy.
+        </mat-error>
+      </mat-form-field>
 
-<mat-dialog-actions align="end">
-  <button matButton [mat-dialog-close]="false">Cancelar</button>
-  <button matButton (click)="returnData()" cdkFocusInitial>Confirmar</button>
-</mat-dialog-actions>
+      <!-- Hora límite -->
+      <mat-form-field appearance="fill" class="info_items">
+        <mat-label>Hora limite</mat-label>
+        <input matInput type="time" [(ngModel)]="selectedTime" name="selectedTime" required #timeField="ngModel">
+        <mat-error *ngIf="timeField.invalid && timeField.touched">
+          La hora es obligatoria.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div id="fourth_info">
+      <!-- Número GIS -->
+      <mat-form-field id="gisNumber">
+        <mat-label>Numero de GIS</mat-label>
+        <input matInput [(ngModel)]="gisNumber" name="gisNumber">
+      </mat-form-field>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton [mat-dialog-close]="false">Cancelar</button>
+    <button matButton (click)="returnData()" cdkFocusInitial [disabled]="taskForm.invalid">
+      Confirmar
+    </button>
+  </mat-dialog-actions>
+</form>

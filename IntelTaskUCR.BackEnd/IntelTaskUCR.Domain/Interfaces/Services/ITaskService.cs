@@ -15,5 +15,6 @@ namespace IntelTaskUCR.Domain.Interfaces.Services
         Task<bool> UpdateTaskAsync(int id, Dictionary<string, object?> newData);
         Task<bool> ChangeStatusTaskAsync(int idTask, int idUser, int idStatus, object? additionalData);
         Task<bool> ChangeStatusWithMessageAsync(int idTask, int idStatus, string message);
+        Task<IEnumerable<Tasks>> filterTaskPerUser(int idUser, int[] states, bool acendent);
     }
 }

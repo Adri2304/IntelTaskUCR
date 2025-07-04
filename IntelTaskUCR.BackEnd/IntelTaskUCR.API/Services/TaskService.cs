@@ -16,6 +16,7 @@ namespace IntelTaskUCR.API.Services
             _rejectJustifyingRepository = rejectJustifyingRepository;
             _MachineStateService = machineStateService;
         }
+
         public async Task<List<Tasks>> ReadTaskAsync(int? idTask)
         {
             return await _taskRepository.ReadTaskAsync(idTask);
@@ -75,6 +76,17 @@ namespace IntelTaskUCR.API.Services
                     }
             }
             return false;
+        }
+
+        public async Task<IEnumerable<Tasks>> filterTaskPerUser(int idUser, int[] states, bool descending)
+        {
+            var tasks = await _taskRepository.ReadTasksPerUserAsync(idUser);
+
+            var filtered = tasks
+                .Where(x => x.CnIdEstado != 9)
+                .Where(x => states.Length == 0 || states.Contains(x.CnIdEstado));
+
+            return descending ? filtered.Reverse() : filtered;
         }
     }
 }

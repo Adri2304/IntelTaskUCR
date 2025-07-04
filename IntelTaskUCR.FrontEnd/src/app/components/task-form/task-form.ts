@@ -1,5 +1,5 @@
 import { Component, inject, Inject, OnInit } from '@angular/core';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -9,34 +9,50 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../services/TaskService/task-service';
 import { IUpdateTask } from '../../models/iupdate-task';
+import { CommonModule } from '@angular/common';
+import { Stateservice } from '../../services/stateService/stateservice';
+import { IComplexities } from '../../models/icomplexities';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
+import { IPriorities } from '../../models/ipriorities';
 
 
 @Component({
   selector: 'app-task-form',
   imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatInputModule,
-    MatDatepickerModule, FormsModule],
+    MatDatepickerModule, FormsModule, CommonModule],
   providers: [provideNativeDateAdapter()],
   templateUrl: './task-form.html',
   styleUrl: './task-form.css'
 })
 
 export class TaskForm implements OnInit {
+  dialogRef = inject(MatDialogRef);
+  taskService = inject(TaskService);
+  stateService = inject(Stateservice);
+  dialog = inject(MatDialog);
+
   title: string = "";
   description: string = "";
-  prioritySelected = "1";
-  complexitySelected = "4";
+  prioritySelected = "";
+  complexitySelected = "";
   limitDate!: Date;
   selectedTime: string = '16:30';
   gisNumber: string = "";
-  dialogRef = inject(MatDialogRef);
-  taskService = inject(TaskService);
+  minDate: Date;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data?: IUpdateTask){}
+  complejidades: IComplexities[] = [];
+  prioridades: IPriorities[] = [];
 
-  ngOnInit(): void {
+  constructor(@Inject(MAT_DIALOG_DATA) public data?: IUpdateTask){
+    this.minDate = new Date();
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.cargarComplejidades();
+    await this.cargarPrioridades();
+
     if (this.data) {
       const fecha = new Date(this.data.cfFechaLimite);
-
       this.title = this.data.ctTituloTarea;
       this.description = this.data.ctDescripcionTarea;
       this.prioritySelected = String(this.data.cnIdPrioridad);
@@ -73,5 +89,37 @@ export class TaskForm implements OnInit {
     const nuevaFecha = new Date(fecha);
     nuevaFecha.setHours(horas, minutos, 0, 0);
     return nuevaFecha;
+  }
+
+  async cargarComplejidades(){
+    this.stateService.getAllComplexities().subscribe({
+      next: (res: IComplexities[]) => this.complejidades = res,
+      error: () => {
+        this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Error",
+              body: "Error al cargar las complejidades",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
+      }
+    });
+  }
+  
+  async cargarPrioridades(){
+    this.stateService.getAllPriorities().subscribe({
+      next: (res: IPriorities[]) => this.prioridades = res,
+      error: () => {
+        this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Error",
+              body: "Error al cargar los estados",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
+      }
+    });
   }
 }

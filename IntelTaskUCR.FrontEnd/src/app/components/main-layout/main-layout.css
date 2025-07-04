@@ -1,0 +1,41 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header, app-toolbar {
+  flex: 0 0 auto;
+  background-color: #05446c;
+  width: 100%;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #05446c;
+
+  .header-logos {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 70px;
+    }
+  }
+
+  #exitButton {
+    padding-left: 10px;
+    color: red;
+    margin-right: 10px;
+  }
+  button:hover{
+    background-color: rgba(211, 2, 2, 0.3);
+  }
+}
+
+#div-sidenav {
+  flex: 1 1 auto;
+  overflow: hidden;
+}

@@ -6,12 +6,16 @@ using Microsoft.IdentityModel.Tokens;
 namespace IntelTaskUCR.API.Controllers
 {
     [ApiController]
-    [Route("status")]
+    [Route("states")]
     public class StatusController : ControllerBase
     {
         public readonly IMachineStateService _MachineStateService;
-        
-        public StatusController(IMachineStateService machineStateService) => _MachineStateService = machineStateService;
+        public readonly IStatusService _statusService;
+
+        public StatusController(IMachineStateService machineStateService, IStatusService statusService) {
+            _MachineStateService = machineStateService;
+            _statusService = statusService;
+        }
 
         [HttpGet]
         [Route("valid/{idState}")]
@@ -20,7 +24,53 @@ namespace IntelTaskUCR.API.Controllers
             try
             {
                 var validStates = _MachineStateService.ObtenerTransicionesValidas((TaskStates)idState);
-                return !validStates.IsNullOrEmpty() ? StatusCode(200, validStates) : StatusCode(409);
+                return StatusCode(200, validStates);
+                //return !validStates.IsNullOrEmpty() ? StatusCode(200, validStates) : StatusCode(409);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("states")]
+        public async Task<ActionResult> ReadStatesAsync()
+        {
+            try
+            {
+                var response = await _statusService.ReadStatesAsync();
+                return StatusCode(200, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("complexities")]
+        public async Task<ActionResult> ReadComplexitiesAsync()
+        {
+            try
+            {
+                var response = await _statusService.ReadComplexitiesAsync();
+                return StatusCode(200, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("priorities")]
+        public async Task<ActionResult> ReadPrioritiesAsync()
+        {
+            try
+            {
+                var response = await _statusService.ReadPrioritiesAsync();
+                return StatusCode(200, response);
             }
             catch (Exception ex)
             {

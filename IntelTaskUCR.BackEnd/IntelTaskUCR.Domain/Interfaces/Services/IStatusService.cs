@@ -8,5 +8,8 @@ namespace IntelTaskUCR.Domain.Interfaces.Services
 {
     public interface IStatusService
     {
+        Task<IEnumerable<object>> ReadStatesAsync();
+        Task<IEnumerable<object>> ReadComplexitiesAsync();
+        Task<IEnumerable<object>> ReadPrioritiesAsync();
     }
 }

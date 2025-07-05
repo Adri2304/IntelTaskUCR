@@ -2,6 +2,7 @@
 using IntelTaskUCR.Domain.Interfaces.Repositories;
 using IntelTaskUCR.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,11 @@ namespace IntelTaskUCR.Infrastructure.Repositories
             }
 
             var users = await _dbContext.TUsuarios
-                .Where(x => x.CnIdRol == 6)
+                .FromSqlRaw(@"
+                    SELECT T.* 
+                    FROM T_Usuarios T
+                    JOIN T_Roles R ON T.CN_Id_rol = R.CN_Id_rol
+                    WHERE R.CN_Jerarquia = {0}", 6)
                 .ToListAsync();
 
             if (!users.IsNullOrEmpty())

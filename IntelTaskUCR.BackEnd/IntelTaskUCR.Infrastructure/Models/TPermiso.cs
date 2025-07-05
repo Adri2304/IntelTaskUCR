@@ -26,6 +26,4 @@ public partial class TPermiso
     public virtual TEstado CnIdEstadoNavigation { get; set; } = null!;
 
     public virtual TUsuario CnUsuarioCreadorNavigation { get; set; } = null!;
-
-    public virtual ICollection<TAdjunto> TAdjuntos { get; set; } = new List<TAdjunto>();
 }

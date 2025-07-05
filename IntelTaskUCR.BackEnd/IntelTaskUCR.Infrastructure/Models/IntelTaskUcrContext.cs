@@ -19,6 +19,8 @@ public partial class IntelTaskUcrContext : DbContext
 
     public virtual DbSet<TAdjunto> TAdjuntos { get; set; }
 
+    public virtual DbSet<TAdjuntosXTarea> TAdjuntosXTareas { get; set; }
+
     public virtual DbSet<TBitacoraAccione> TBitacoraAcciones { get; set; }
 
     public virtual DbSet<TBitacoraCambiosEstado> TBitacoraCambiosEstados { get; set; }
@@ -78,14 +80,11 @@ public partial class IntelTaskUcrContext : DbContext
 
         modelBuilder.Entity<TAdjunto>(entity =>
         {
-            entity.HasKey(e => new { e.CnIdAdjuntos, e.CnDocumento }).HasName("PK__T_Adjunt__F001B021DBC172C2");
+            entity.HasKey(e => e.CnIdAdjuntos);
 
             entity.ToTable("T_Adjuntos");
 
-            entity.Property(e => e.CnIdAdjuntos)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("CN_Id_adjuntos");
-            entity.Property(e => e.CnDocumento).HasColumnName("CN_Documento");
+            entity.Property(e => e.CnIdAdjuntos).HasColumnName("CN_Id_adjuntos");
             entity.Property(e => e.CfFechaRegistro)
                 .HasColumnType("datetime")
                 .HasColumnName("CF_Fecha_registro");
@@ -95,20 +94,30 @@ public partial class IntelTaskUcrContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("CT_Archivo_ruta");
 
-            entity.HasOne(d => d.CnDocumentoNavigation).WithMany(p => p.TAdjuntos)
-                .HasForeignKey(d => d.CnDocumento)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_T_Adjuntos_T_Permisos");
-
-            entity.HasOne(d => d.CnDocumento1).WithMany(p => p.TAdjuntos)
-                .HasForeignKey(d => d.CnDocumento)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_T_Adjuntos_T_Tareas");
-
             entity.HasOne(d => d.CnUsuarioAccionNavigation).WithMany(p => p.TAdjuntos)
                 .HasForeignKey(d => d.CnUsuarioAccion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_T_Adjuntos_T_Usuarios");
+        });
+
+        modelBuilder.Entity<TAdjuntosXTarea>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("T_Adjuntos_X_Tareas");
+
+            entity.Property(e => e.CnIdAdjuntos).HasColumnName("CN_Id_adjuntos");
+            entity.Property(e => e.CnIdTarea).HasColumnName("CN_Id_tarea");
+
+            entity.HasOne(d => d.CnIdAdjuntosNavigation).WithMany()
+                .HasForeignKey(d => d.CnIdAdjuntos)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_T_Adjuntos_X_Tareas_T_Adjuntos");
+
+            entity.HasOne(d => d.CnIdTareaNavigation).WithMany()
+                .HasForeignKey(d => d.CnIdTarea)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_T_Adjuntos_X_Tareas_T_Tareas");
         });
 
         modelBuilder.Entity<TBitacoraAccione>(entity =>
@@ -121,11 +130,11 @@ public partial class IntelTaskUcrContext : DbContext
             entity.Property(e => e.CfFechaHoraRegistro)
                 .HasColumnType("datetime")
                 .HasColumnName("CF_Fecha_hora_registro");
-            entity.Property(e => e.CnDocumento)
-                .HasComment("Campo llave del documentos")
-                .HasColumnName("CN_Documento");
             entity.Property(e => e.CnIdAccion).HasColumnName("CN_Id_accion");
             entity.Property(e => e.CnIdPantalla).HasColumnName("CN_Id_pantalla");
+            entity.Property(e => e.CnIdTareaPermiso)
+                .HasComment("Campo llave del documentos")
+                .HasColumnName("CN_Id_tarea_permiso");
             entity.Property(e => e.CnIdTipoDocumento).HasColumnName("CN_Id_tipo_documento");
             entity.Property(e => e.CnIdUsuario).HasColumnName("CN_id_usuario");
             entity.Property(e => e.CtInformacionImportante)
@@ -164,17 +173,14 @@ public partial class IntelTaskUcrContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("CF_Fecha_hora_cambio");
-            entity.Property(e => e.CnIdEntidadAfectada).HasColumnName("CN_Id_entidad_afectada");
             entity.Property(e => e.CnIdEstadoAnterior).HasColumnName("CN_Id_estado_anterior");
             entity.Property(e => e.CnIdEstadoNuevo).HasColumnName("CN_Id_estado_nuevo");
+            entity.Property(e => e.CnIdTareaPermiso).HasColumnName("CN_Id_tarea_permiso");
+            entity.Property(e => e.CnIdTipoDocumento).HasColumnName("CN_Id_tipo_documento");
             entity.Property(e => e.CnIdUsuarioResponsable).HasColumnName("CN_Id_usuario_responsable");
             entity.Property(e => e.CtObservaciones)
                 .HasColumnType("text")
                 .HasColumnName("CT_Observaciones");
-            entity.Property(e => e.CtTipoEntidad)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("CT_Tipo_entidad");
 
             entity.HasOne(d => d.CnIdEstadoAnteriorNavigation).WithMany(p => p.TBitacoraCambiosEstadoCnIdEstadoAnteriorNavigations)
                 .HasForeignKey(d => d.CnIdEstadoAnterior)
@@ -185,6 +191,11 @@ public partial class IntelTaskUcrContext : DbContext
                 .HasForeignKey(d => d.CnIdEstadoNuevo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_T_Bitacora_Cambios_Estados_T_Estados1");
+
+            entity.HasOne(d => d.CnIdTipoDocumentoNavigation).WithMany(p => p.TBitacoraCambiosEstados)
+                .HasForeignKey(d => d.CnIdTipoDocumento)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_T_Bitacora_Cambios_Estados_T_Tipos_documentos");
 
             entity.HasOne(d => d.CnIdUsuarioResponsableNavigation).WithMany(p => p.TBitacoraCambiosEstados)
                 .HasForeignKey(d => d.CnIdUsuarioResponsable)
@@ -275,7 +286,6 @@ public partial class IntelTaskUcrContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("CF_Fecha_hora_recordatorio");
             entity.Property(e => e.CfFechaHoraRegistro)
-                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("CF_Fecha_hora_registro");
             entity.Property(e => e.CnFrecuenciaRecordatorio).HasColumnName("CN_Frecuencia_recordatorio");
@@ -659,9 +669,7 @@ public partial class IntelTaskUcrContext : DbContext
 
             entity.ToTable("TI_Rol_X_Pantalla_X_Accion");
 
-            entity.Property(e => e.CnIdPantalla)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("CN_Id_pantalla");
+            entity.Property(e => e.CnIdPantalla).HasColumnName("CN_Id_pantalla");
             entity.Property(e => e.CnIdAccion).HasColumnName("CN_Id_accion");
             entity.Property(e => e.CnIdRol).HasColumnName("CN_Id_rol");
 

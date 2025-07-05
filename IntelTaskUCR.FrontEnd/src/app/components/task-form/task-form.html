@@ -87,7 +87,7 @@
 
   <mat-dialog-actions align="end">
     <button matButton [mat-dialog-close]="false">Cancelar</button>
-    <button matButton (click)="returnData()" cdkFocusInitial [disabled]="taskForm.invalid">
+    <button type="button" matButton (click)="returnData()" cdkFocusInitial [disabled]="taskForm.invalid">
       Confirmar
     </button>
   </mat-dialog-actions>

@@ -87,7 +87,7 @@ namespace IntelTaskUCR.API.Controllers
 
         [HttpPost]
         [Route("filter/{idUser}")]
-        public async Task<ActionResult> filterTaskPerUser(int idUser, [FromBody] FilterTaskDTO body)
+        public async Task<ActionResult> FilterTaskPerUser(int idUser, [FromBody] FilterTaskDTO body)
         {
             try
             {
@@ -95,6 +95,20 @@ namespace IntelTaskUCR.API.Controllers
                 return response.IsNullOrEmpty() ? StatusCode(204) : StatusCode(200, response);
             }
             catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("allinfo/{idTask}")]
+        public async Task<ActionResult> AllInfoAsync(int idTask)
+        {
+            try
+            {
+                var response = await _taskService.AllInfoAsync(idTask);
+                return StatusCode(200, response);
+            } catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }

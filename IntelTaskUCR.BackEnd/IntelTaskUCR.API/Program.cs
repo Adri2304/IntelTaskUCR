@@ -26,6 +26,7 @@ builder.Services.AddScoped<IRejectJustifyingRepository, RejectJustifyingReposito
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IMachineStateService, MachineStateService>();
+builder.Services.AddScoped<IBitacoraEstadosRepository, BitacoraEstadosRepository>();
 
 builder.Services.AddCors(options =>
 {

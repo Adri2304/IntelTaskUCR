@@ -22,7 +22,7 @@ public partial class TBitacoraAccione
     /// <summary>
     /// Campo llave del documentos
     /// </summary>
-    public int? CnDocumento { get; set; }
+    public int? CnIdTareaPermiso { get; set; }
 
     public virtual TAccione CnIdAccionNavigation { get; set; } = null!;
 

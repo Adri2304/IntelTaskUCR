@@ -79,8 +79,9 @@ export class TaskForm implements OnInit {
   }
 
   formatearFecha(fecha: Date): string {
-    return fecha.toISOString().split('.')[0]; // Elimina los milisegundos
+    return this.formatearFechaLocal(fecha); // Usa la nueva función local
   }
+
 
   combinarFechaHora(fecha: Date, hora: string): Date {
     if (!fecha || !hora) return new Date();
@@ -90,6 +91,17 @@ export class TaskForm implements OnInit {
     nuevaFecha.setHours(horas, minutos, 0, 0);
     return nuevaFecha;
   }
+
+  private formatearFechaLocal(fecha: Date): string {
+    const yyyy = fecha.getFullYear();
+    const MM = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dd = String(fecha.getDate()).padStart(2, '0');
+    const hh = String(fecha.getHours()).padStart(2, '0');
+    const mm = String(fecha.getMinutes()).padStart(2, '0');
+    const ss = String(fecha.getSeconds()).padStart(2, '0');
+    return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}`;
+}
+
 
   async cargarComplejidades(){
     this.stateService.getAllComplexities().subscribe({

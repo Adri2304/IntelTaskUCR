@@ -46,31 +46,31 @@ namespace IntelTaskUCR.API.Services
                 if (int.TryParse(additionalData.ToString(), out int assignedUser))
                 {
                     //Si viene id para asignar usuario
-                    return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, assignedUser);
+                    return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, assignedUser, idUser);
                 }
                 else
                 {
                     //Si viene mensaje
-                    return await ChangeStatusWithMessageAsync(idTask, idStatus, message: additionalData.ToString()!);
+                    return await ChangeStatusWithMessageAsync(idTask, idStatus, message: additionalData.ToString()!, idUser);
                 }
             }
             //Si no viene nada y solamente es cambiar el estado
             if (idStatus == 7)
-                return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, "");
-            return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus);
+                return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, "", idUser);
+            return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, idUser);
         }
 
-        public async Task<bool> ChangeStatusWithMessageAsync(int idTask, int idStatus, string message)
+        public async Task<bool> ChangeStatusWithMessageAsync(int idTask, int idStatus, string message, int idUser)
         {
             switch (idStatus)
             {
                 case 4: //En espera
-                    return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, message);
+                    return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, message, idUser);
 
                 case 6://Rechazado
                     {
                         if (await _rejectJustifyingRepository.CreateRejectJustifyingAsync(idTask, message))
-                            return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus);
+                            return await _taskRepository.ChangeStatusTaskAsync(idTask, idStatus, idUser);
 
                         return false;
                     }
@@ -87,6 +87,11 @@ namespace IntelTaskUCR.API.Services
                 .Where(x => states.Length == 0 || states.Contains(x.CnIdEstado));
 
             return descending ? filtered.Reverse() : filtered;
+        }
+
+        public async Task<object> AllInfoAsync(int idTask)
+        {
+            return await _taskRepository.AllInfoAsync(idTask);
         }
     }
 }

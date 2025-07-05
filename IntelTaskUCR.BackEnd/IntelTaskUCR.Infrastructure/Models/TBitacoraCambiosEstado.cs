@@ -7,9 +7,9 @@ public partial class TBitacoraCambiosEstado
 {
     public int CnIdCambioEstado { get; set; }
 
-    public int CnIdEntidadAfectada { get; set; }
+    public int CnIdTareaPermiso { get; set; }
 
-    public string CtTipoEntidad { get; set; } = null!;
+    public int CnIdTipoDocumento { get; set; }
 
     public byte CnIdEstadoAnterior { get; set; }
 
@@ -24,6 +24,8 @@ public partial class TBitacoraCambiosEstado
     public virtual TEstado CnIdEstadoAnteriorNavigation { get; set; } = null!;
 
     public virtual TEstado CnIdEstadoNuevoNavigation { get; set; } = null!;
+
+    public virtual TTiposDocumento CnIdTipoDocumentoNavigation { get; set; } = null!;
 
     public virtual TUsuario CnIdUsuarioResponsableNavigation { get; set; } = null!;
 }

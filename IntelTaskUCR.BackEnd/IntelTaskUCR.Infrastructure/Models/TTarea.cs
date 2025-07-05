@@ -47,8 +47,6 @@ public partial class TTarea
 
     public virtual ICollection<TTarea> InverseCnTareaOrigenNavigation { get; set; } = new List<TTarea>();
 
-    public virtual ICollection<TAdjunto> TAdjuntos { get; set; } = new List<TAdjunto>();
-
     public virtual ICollection<TTareasIncumplimiento> TTareasIncumplimientos { get; set; } = new List<TTareasIncumplimiento>();
 
     public virtual ICollection<TTareasJustificacionRechazo> TTareasJustificacionRechazos { get; set; } = new List<TTareasJustificacionRechazo>();

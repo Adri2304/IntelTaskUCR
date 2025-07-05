@@ -92,9 +92,11 @@ export class Task implements OnInit{
           cnIdEstado: 1,
           cnIdPrioridad: result.cnIdPrioridad,
           cnNumeroGis: result.cnNumeroGis,
-          cfFechaAsignacion: new Date().toISOString().split('.')[0], // Elimina los milisegundos
+          // cfFechaAsignaion: new Date().toISOString().split('.')[0], 
+          cfFechaAsignacion: this.formatearFechaLocal(new Date()),
+          cfFechaFinalizacion: this.formatearFechaLocal(new Date()),
           cfFechaLimite: result.cfFechaLimite,
-          cfFechaFinalizacion: new Date().toISOString().split('.')[0], // Elimina los milisegundos
+          // cfFechaFinalizacion: new Date().toISOString().split('.')[0], // Elimina los milisegundos
           cnUsuarioCreador: this.idUsuarioLogueado,
           cnUsuarioAsignado: null
         };
@@ -495,6 +497,16 @@ export class Task implements OnInit{
     }
 
     return false;
+  }
+
+  private formatearFechaLocal(fecha: Date): string {
+    const yyyy = fecha.getFullYear();
+    const MM = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dd = String(fecha.getDate()).padStart(2, '0');
+    const hh = String(fecha.getHours()).padStart(2, '0');
+    const mm = String(fecha.getMinutes()).padStart(2, '0');
+    const ss = String(fecha.getSeconds()).padStart(2, '0');
+    return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}`;
   }
 
 }

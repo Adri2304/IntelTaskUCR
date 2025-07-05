@@ -7,6 +7,7 @@ import { MainLayout } from './components/main-layout/main-layout';
 import { LoginLayout } from './components/login-layout/login-layout';
 import { Login } from './components/login/login';
 import { authGuard } from './guards/auth-guard';
+import { TaskDetail } from './components/task-detail/task-detail';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,7 @@ export const routes: Routes = [
     canActivate: [authGuard], // ⬅️ agregamos el guard acá
     children: [
       { path: 'task', component: Task },
+      { path: 'taskdetail/:id', component: TaskDetail },
       { path: 'request', component: Request },
       { path: 'notification', component: Notification },
       { path: 'report', component: Reports },

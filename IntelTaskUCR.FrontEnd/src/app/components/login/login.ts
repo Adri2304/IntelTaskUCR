@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Authservice } from '../../services/AuthService/authservice';
 import { IAuth } from '../../models/iauth';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialog } from '../../shared/confirmation-dialog/confirmation-dialog';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +21,7 @@ export class Login {
   loginForm: FormGroup;
   authService = inject(Authservice);
   router = inject(Router);
+  dialog = inject(MatDialog);
 
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
@@ -45,8 +48,14 @@ export class Login {
           this.router.navigate(['/task']);
         },
         error: (err) => {
-          console.log(err);
-          console.log("No se pudo");
+          this.dialog.open(ConfirmationDialog, {
+            data: {
+              title: "Usuario no encontrado",
+              body: "Verifique su correo o contraseña",
+              successButton: "aceptar",
+              rejectButton: ""
+            }
+          });
         }
       })
     }

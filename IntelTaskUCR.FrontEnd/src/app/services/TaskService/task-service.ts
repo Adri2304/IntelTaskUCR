@@ -34,4 +34,8 @@ export class TaskService {
   filterTaskPerUser(idUser: number, body: IFilterTask): Observable<any> {
     return this.httpClient.post<any>(`${this.URL}/filter/${idUser}`, body);
   }
+
+  getAllInfo(idTask: number) {
+    return this.httpClient.get<any[]>(`${this.URL}/allinfo/${idTask}`);
+  }
 }

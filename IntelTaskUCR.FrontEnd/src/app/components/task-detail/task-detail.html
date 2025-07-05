@@ -1,0 +1,56 @@
+<div class="task-detail">
+  <h2>{{ tarea?.ctTituloTarea }}</h2>
+  <p><strong>Descripción:</strong> {{ tarea?.ctDescripcionTarea }}</p>
+  <p><strong>Gis:</strong> {{ tarea?.cnNumeroGis }}</p>
+  <p><strong>Estado:</strong> {{ tarea?.cnIdEstado }}</p>
+  <p><strong>Prioridad:</strong> {{ tarea?.cnIdPrioridad }}</p>
+  <p><strong>Complejidad:</strong> {{ tarea?.cnIdComplejidad }}</p>
+  <p><strong>Fecha límite:</strong> {{ tarea?.cfFechaLimite | date:'medium' }}</p>
+  <p><strong>Fecha finalización:</strong> {{ tarea?.cfFechaFinalizacion | date:'medium' }}</p>
+
+  <hr>
+
+  <h3>Usuarios Relacionados</h3>
+  <ul>
+    <li *ngFor="let u of usuarios">
+      {{ u.nombreUsuario }} ({{ u.nombreRol }}) - {{ u.correoUsuario }}
+    </li>
+  </ul>
+
+  <hr>
+
+  <h3>Bitácora de Cambios de Estado</h3>
+  <table *ngIf="bitacora.length > 0" class="bitacora-table">
+    <thead>
+      <tr>
+        <th>Anterior</th>
+        <th>Nuevo</th>
+        <th>Responsable</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let b of bitacora">
+        <td>{{ b.cnIdEstadoAnterior }}</td>
+        <td>{{ b.cnIdEstadoNuevo }}</td>
+        <td>{{ b.cnIdUsuarioResponsable }}</td>
+        <td>{{ b.cfFechaHoraCambio | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="bitacora.length === 0">Sin cambios registrados.</p>
+
+  <hr>
+
+  <h3>Justificaciones de Rechazo</h3>
+  <div *ngIf="justificaciones.length > 0; else noJustificaciones">
+    <ul>
+      <li *ngFor="let j of justificaciones">
+        {{ j.cfFechaHoraRechazo | date:'short' }} - {{ j.ctDescripcionRechazo }}
+      </li>
+    </ul>
+  </div>
+  <ng-template #noJustificaciones>
+    <p>No hay justificaciones registradas.</p>
+  </ng-template>
+</div>

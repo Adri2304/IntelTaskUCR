@@ -18,8 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { AsignarForm } from '../asignar-form/asignar-form';
 import { EnEsperaForm } from '../en-espera-form/en-espera-form';
 import { Authservice } from '../../services/AuthService/authservice';
-import { Router } from '@angular/router';
-import { IAuthResponse } from '../../models/iauth-response';
+import { Router, RouterLink } from '@angular/router';
 import { IStates } from '../../models/istates';
 import { IFilterTask } from '../../models/ifilter-task';
 import { IComplexities } from '../../models/icomplexities';
@@ -28,7 +27,7 @@ import { IPriorities } from '../../models/ipriorities';
 @Component({
   selector: 'app-task',
   imports: [MatButtonModule, MatCardModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule,
-  CommonModule, FormsModule],
+  CommonModule, FormsModule, RouterLink],
   templateUrl: './task.html',
   styleUrl: './task.css'
 })
@@ -255,6 +254,17 @@ export class Task implements OnInit{
         selectElement.value = String(task.cnIdEstado);
       return;
     }
+
+    // if (nuevoEstado === "3") {
+    //   const existeEstado3 = this.tasks.some(t => t.cnIdEstado === 3);
+    //   if (existeEstado3) {
+    //     // Aquí ya existe una tarea con estado 3
+    //     // Puedes mostrar un mensaje o cancelar el cambio
+    //     alert("Ya existe una tarea con estado 3. No se puede asignar esta tarea a ese estado.");
+    //     selectElement.value = String(task.cnIdEstado);
+    //     return;
+    //   }
+    // }
 
     switch (nuevoEstado) {
       case "2":
@@ -485,7 +495,7 @@ export class Task implements OnInit{
     const esCreador = task.cnUsuarioCreador === this.idUsuarioLogueado;
     const esAsignado = task.cnUsuarioAsignado === this.idUsuarioLogueado;
 
-    const estadosCreador = [1, 5, 6, 7, 8];
+    const estadosCreador = [1, 5, 6, 8];
     const estadosAsignado = [2, 3, 4];
 
     if (estadosCreador.includes(estado)) {

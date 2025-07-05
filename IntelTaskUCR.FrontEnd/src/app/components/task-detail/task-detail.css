@@ -1,0 +1,15 @@
+.task-detail {
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.bitacora-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bitacora-table th, .bitacora-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
